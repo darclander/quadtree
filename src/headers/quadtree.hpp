@@ -2,6 +2,3 @@
 
 #include <iostream>
 
-struct Test {
-    int a;
-};
