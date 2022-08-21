@@ -23,6 +23,7 @@ bool initSDL() {
     return true;
 }
 
+
 int main(int argv, char** args) {
 
     initSDL();
@@ -62,6 +63,12 @@ int main(int argv, char** args) {
 			case SDL_QUIT:
 				running = false;
 				break;
+			case SDL_MOUSEBUTTONDOWN:
+				int tmpX, tmpY;
+				SDL_GetMouseState(&tmpX, &tmpY);
+				squares.push_back(Square(window.getRenderer(), tmpX, tmpY));
+				break;
+
 			}
 		}
 

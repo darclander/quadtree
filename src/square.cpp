@@ -2,10 +2,11 @@
 
 Square::Square(SDL_Renderer *r, int x, int y) {
     renderer = r;
-    rect.x = x;
-    rect.y = y;
     rect.w = 50;
     rect.h = 50;
+    rect.x = x - rect.w / 2;
+    rect.y = y - rect.h / 2;
+
 }
 
 void Square::render() {
