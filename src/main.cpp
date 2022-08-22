@@ -40,6 +40,8 @@ int main(int argv, char** args) {
 
     std::vector<Square> squares;
     squares.push_back(Square(window.getRenderer(), 50, 50));
+	Quadtree quad = Quadtree(window.getRenderer(), WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WINDOW_WIDTH, WINDOW_HEIGHT);
+	quad.subdivide();
 
     while(running) {
 		lastTick = currentTick;
@@ -53,8 +55,10 @@ int main(int argv, char** args) {
             x.render();
         }
 
-
+		quad.render();
+		quad.renderS();
         window.display();
+
 
 		while (SDL_PollEvent(&event))
 		{
@@ -67,6 +71,7 @@ int main(int argv, char** args) {
 				int tmpX, tmpY;
 				SDL_GetMouseState(&tmpX, &tmpY);
 				squares.push_back(Square(window.getRenderer(), tmpX, tmpY));
+				std::cout << "X: " << tmpX << " Y: " << tmpY << std::endl;
 				break;
 
 			}
