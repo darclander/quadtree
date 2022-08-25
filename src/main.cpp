@@ -41,7 +41,7 @@ int main(int argv, char** args) {
     std::vector<Square> squares;
     squares.push_back(Square(window.getRenderer(), 50, 50));
 	Quadtree quad = Quadtree(window.getRenderer(), WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WINDOW_WIDTH, WINDOW_HEIGHT);
-	quad.subdivide();
+	quad.subdivide(5);
 
     while(running) {
 		lastTick = currentTick;
@@ -56,7 +56,7 @@ int main(int argv, char** args) {
         }
 
 		quad.render();
-		quad.renderS();
+
         window.display();
 
 

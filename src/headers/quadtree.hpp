@@ -12,6 +12,7 @@ class Quadtree {
         void render();
         void renderS();
         void subdivide();
+        void subdivide(int amount);
 
     private:
 
@@ -24,6 +25,8 @@ class Quadtree {
         int width;
         int height;
 
-        Quadtree *x = nullptr;
-
+        Quadtree *tr = nullptr;
+        Quadtree *tl = nullptr;
+        Quadtree *br = nullptr;
+        Quadtree *bl = nullptr;
 };
