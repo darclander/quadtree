@@ -9,8 +9,12 @@ class Square {
         Square(SDL_Renderer *r, int x, int y);
 
         void render();
-        
+        void printPos();
 
+        int getX();
+        int getY();
+        int getW();
+        int getH();
 
 
     private:

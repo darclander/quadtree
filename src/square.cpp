@@ -14,3 +14,24 @@ void Square::render() {
     SDL_RenderDrawRect(renderer, &rect);
     SDL_RenderFillRect(renderer, &rect);
 }
+
+void Square::printPos() {
+    std::cout << "X: " << rect.x << std::endl;
+    std::cout << "Y: " << rect.y << std::endl;
+}
+
+int Square::getX() {
+    return this->rect.x;
+}
+
+int Square::getY() {
+    return this->rect.y;
+}
+
+int Square::getW() {
+    return this->rect.w;
+}
+
+int Square::getH() {
+    return this->rect.h;
+}
