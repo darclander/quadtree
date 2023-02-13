@@ -60,6 +60,10 @@ void Quadtree::subdivide() {
                           centerY + height/4, width/2, 
                           height/2, level + 1);
     }
+
+    for(auto &s : squares) {
+        insertArea(s);
+    }
 }
 
 void Quadtree::subdivide(int location) {
@@ -83,6 +87,9 @@ void Quadtree::subdivide(int location) {
     // tr = new Quadtree(renderer, width/2 + width/4, height/4, width/2, height/2);
     // bl = new Quadtree(renderer, width/4, height/2 + height/4, width/2, height/2);
     // br = new Quadtree(renderer, width/2 + width/4, height/2 + height/4, width/2, height/2);
+
+
+
 }
 
 void Quadtree::render() {
@@ -117,27 +124,23 @@ void Quadtree::render() {
 
 bool Quadtree::insertArea(Square square) {
     if(square.getX() < centerX && 
-       square.getY() < centerY) {
-        tl->insert(square);
-        return true;
+        square.getY() < centerY) {
+        return tl->insert(square);
     }
 
     if(square.getX() > centerX && 
-       square.getY() < centerY) {
-        tr->insert(square);
-        return true;
+        square.getY() < centerY) {
+        return tr->insert(square);
     }
 
     if(square.getX() < centerX && 
-       square.getY() > centerY) {
-        bl->insert(square);
-        return true;
+        square.getY() > centerY) {
+        return bl->insert(square);
     }
 
     if(square.getX() > centerX && 
-       square.getY() > centerY) {
-        br->insert(square);
-        return true;
+        square.getY() > centerY) {
+        return br->insert(square);
     }
 
     return false;
@@ -147,11 +150,11 @@ bool Quadtree::insert(Square square) {
 
     // std::cout << subdivided << std::endl;
     // std::cout << squares.size() << std::endl;
-    square.printPos();
+    // square.printPos();
 
     if(subdivided) {
         std::cout << "Inserting into subquad" << std::endl;
-        insertArea(square);
+        return insertArea(square);
     } else {
         for(auto &s : squares) {
             if(s == square) {
@@ -196,23 +199,13 @@ bool Quadtree::updateArea(Square &oldSquare, Square &newSquare) {
     return false;
 }
 
-
-
 bool Quadtree::update(Square &oldSquare, Square &newSquare) {
+    remove(oldSquare); // When removing and it becomes empty, delete subquad.
     if(subdivided) {
         std::cout << "Updating in subquad" << std::endl;
-        if(updateArea(oldSquare, newSquare)) {
-            remove(oldSquare);
-        }
+        return updateArea(oldSquare, newSquare);
     } else {
-        std::cout << "Removing old square" << std::endl;
-        squares.erase(std::remove_if(squares.begin(), squares.end(), 
-                                    [&](Square s){
-                                            s.printPos();
-                                            oldSquare.printPos();
-                                            return s == oldSquare; 
-                                        }), 
-                                    squares.end());
+
         std::cout << "Inserting new square" << std::endl;
         if(insert(newSquare)) {
             return true;
@@ -220,32 +213,31 @@ bool Quadtree::update(Square &oldSquare, Square &newSquare) {
             insert(oldSquare);
             return false;
         }
-
     }
     return false;
 }
 
 bool Quadtree::removeArea(Square &square) {
     if(square.getX() < centerX && 
-       square.getY() < centerY) {
+        square.getY() < centerY) {
         tl->remove(square);
         return true;
     }
 
     if(square.getX() > centerX && 
-       square.getY() < centerY) {
+        square.getY() < centerY) {
         tr->remove(square);
         return true;
     }
 
     if(square.getX() < centerX && 
-       square.getY() > centerY) {
+        square.getY() > centerY) {
         bl->remove(square);
         return true;
     }
 
     if(square.getX() > centerX && 
-       square.getY() > centerY) {
+        square.getY() > centerY) {
         br->remove(square);
         return true;
     }
@@ -261,13 +253,12 @@ bool Quadtree::remove(Square &square) {
             std::cout << "Removing square from quad" << std::endl;
             squares.erase(std::remove_if(squares.begin(), squares.end(), 
                                         [&](Square s){
-                                                s.printPos();
-                                                square.printPos();
+                                                // s.printPos();
+                                                // square.printPos();
                                                 return s == square; 
                                             }), 
                                         squares.end());
         }
-
         return true;
 }
 

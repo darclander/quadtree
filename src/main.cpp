@@ -63,7 +63,11 @@ int main(int argv, char** args) {
 		const Uint8 *key_state = SDL_GetKeyboardState(NULL);
 		if(key_state[SDL_SCANCODE_S]) {
 			Square newS = Square(window.getRenderer(), squares[0].getX(), squares[0].getY()+(1*deltaTime));
-			if(quad.update(squares[0], newS)) {
+			bool tmp = quad.update(squares[0], newS);
+			std::cout << tmp << std::endl;
+			std::cout << tmp << std::endl;
+			std::cout << tmp << std::endl;
+			if(tmp) {
 				squares[0] = newS;
 			}			
 		}
