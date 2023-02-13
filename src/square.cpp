@@ -1,11 +1,13 @@
 #include "square.hpp"
 
-Square::Square(SDL_Renderer *r, int x, int y) {
+Square::Square(SDL_Renderer *r, float x, float y) {
     renderer = r;
     rect.w = 50;
     rect.h = 50;
-    rect.x = x - rect.w / 2;
-    rect.y = y - rect.h / 2;
+    this->x = x;
+    this->y = y;
+    rect.x = x; //- rect.w / 2;
+    rect.y = y; //- rect.h / 2;
 
 }
 
@@ -20,12 +22,12 @@ void Square::printPos() {
     std::cout << "Y: " << rect.y << std::endl;
 }
 
-int Square::getX() {
-    return this->rect.x;
+float Square::getX() {
+    return this->x;
 }
 
-int Square::getY() {
-    return this->rect.y;
+float Square::getY() {
+    return this->y;
 }
 
 int Square::getW() {
@@ -34,4 +36,10 @@ int Square::getW() {
 
 int Square::getH() {
     return this->rect.h;
+}
+
+bool Square::operator==(Square &s) const {
+    if( rect.x + rect.w < s.getX() || rect.x > s.getX() + s.getW() ) return false;
+    if( rect.y + rect.h < s.getY() || rect.y > s.getY() + s.getH() ) return false;
+    return true;
 }

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include <SDL2/SDL.h>
 
 #include "square.hpp"
@@ -19,8 +20,13 @@ class Quadtree {
         void info();
 
         bool insert(Square square);
-
         bool insertArea(Square square);
+
+        bool update(Square &oldSquare, Square &newSquare);
+        bool updateArea(Square &oldSquare, Square &newSquare);
+
+        bool remove(Square &square);
+        bool removeArea(Square &square);
 
     private:
 

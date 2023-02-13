@@ -6,18 +6,21 @@
 class Square {
 
     public:
-        Square(SDL_Renderer *r, int x, int y);
+        Square(SDL_Renderer *r, float x, float y);
 
         void render();
         void printPos();
 
-        int getX();
-        int getY();
+        float getX();
+        float getY();
         int getW();
         int getH();
 
+        bool operator==(Square&) const; // bool operator==(const Square&) const;
+
 
     private:
+        float x, y;
         SDL_Renderer *renderer;
         SDL_Rect rect;
 

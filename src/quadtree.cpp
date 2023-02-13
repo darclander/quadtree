@@ -1,6 +1,6 @@
 #include "quadtree.hpp"
 
-#define THICKNESS 2
+#define THICKNESS 1
 
 Quadtree::Quadtree(SDL_Renderer *r, int x, int y, int w, int h, int level) {
     std::cout << "Creating quadtree..." << std::endl;
@@ -108,6 +108,10 @@ void Quadtree::render() {
         br->render();
     }
 
+    for(auto &s : squares) {
+        s.render();
+    }
+
   
 }
 
@@ -149,11 +153,18 @@ bool Quadtree::insert(Square square) {
         std::cout << "Inserting into subquad" << std::endl;
         insertArea(square);
     } else {
+        for(auto &s : squares) {
+            if(s == square) {
+                return false;
+            }
+        }
         squares.push_back(square);
-        if(squares.size() > 1) {
+
+        if(squares.size() > 2) {
             subdivide();
             for (auto &x : squares) {
                 insertArea(x);
+                squares.clear();
             }
         }
     }
@@ -162,6 +173,104 @@ bool Quadtree::insert(Square square) {
 }
 
 
+bool Quadtree::updateArea(Square &oldSquare, Square &newSquare) {
+    if(newSquare.getX() < centerX && 
+        newSquare.getY() < centerY) {
+        return tl->update(oldSquare, newSquare);
+    }
+
+    if(newSquare.getX() > centerX && 
+        newSquare.getY() < centerY) {
+        return tr->update(oldSquare, newSquare);
+    }
+
+    if(newSquare.getX() < centerX && 
+        newSquare.getY() > centerY) {
+        return bl->update(oldSquare, newSquare);
+    }
+
+    if(newSquare.getX() > centerX && 
+        newSquare.getY() > centerY) {
+        return br->update(oldSquare, newSquare); // TODO: Return br->update(oldSquare, newSquare);?
+    }
+    return false;
+}
+
+
+
+bool Quadtree::update(Square &oldSquare, Square &newSquare) {
+    if(subdivided) {
+        std::cout << "Updating in subquad" << std::endl;
+        if(updateArea(oldSquare, newSquare)) {
+            remove(oldSquare);
+        }
+    } else {
+        std::cout << "Removing old square" << std::endl;
+        squares.erase(std::remove_if(squares.begin(), squares.end(), 
+                                    [&](Square s){
+                                            s.printPos();
+                                            oldSquare.printPos();
+                                            return s == oldSquare; 
+                                        }), 
+                                    squares.end());
+        std::cout << "Inserting new square" << std::endl;
+        if(insert(newSquare)) {
+            return true;
+        } else {
+            insert(oldSquare);
+            return false;
+        }
+
+    }
+    return false;
+}
+
+bool Quadtree::removeArea(Square &square) {
+    if(square.getX() < centerX && 
+       square.getY() < centerY) {
+        tl->remove(square);
+        return true;
+    }
+
+    if(square.getX() > centerX && 
+       square.getY() < centerY) {
+        tr->remove(square);
+        return true;
+    }
+
+    if(square.getX() < centerX && 
+       square.getY() > centerY) {
+        bl->remove(square);
+        return true;
+    }
+
+    if(square.getX() > centerX && 
+       square.getY() > centerY) {
+        br->remove(square);
+        return true;
+    }
+
+    return false;
+}
+
+bool Quadtree::remove(Square &square) {
+    if(subdivided) {
+            std::cout << "Removing square from subquad" << std::endl;
+            removeArea(square);
+        } else {
+            std::cout << "Removing square from quad" << std::endl;
+            squares.erase(std::remove_if(squares.begin(), squares.end(), 
+                                        [&](Square s){
+                                                s.printPos();
+                                                square.printPos();
+                                                return s == square; 
+                                            }), 
+                                        squares.end());
+        }
+
+        return true;
+}
+
 void Quadtree::info() {
     std::cout << "Level: " << level << std::endl;
     std::cout << "Amount of squares: " << squares.size() << std::endl;
@@ -169,34 +278,4 @@ void Quadtree::info() {
     std::cout << "" << std::endl;
     std::cout << "" << std::endl;
 }
-// bool Quadtree::insert(Square square) {
-//     square.printPos();
-
-//     if(square.getX() < width / 2 && square.getY() < height / 2) {
-//         if(tlSquares.size() < 1) {
-//             tlSquares.push_back(square);
-//             return true;
-//         } else {
-//             subdivide(0);
-//             tl->insert(square);
-//             tl->insert(tlSquares.back());
-//             tlSquares.pop_back();
-//         }
-//     }
-
-//     if(square.getX() > width / 2 && square.getY() < height / 2) {
-//         if(trSquares.size() < 1) {
-//             trSquares.push_back(square);
-//             return true;
-//         } else {
-//             subdivide(1);
-//             tr->insert(square);
-//             tr->insert(trSquares.back());
-//             trSquares.pop_back();
-//         }
-//     }
-    
-
-//     return true;
-// }
 
